@@ -12,7 +12,7 @@ import { EvilIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 
 const Screen3 = ({ navigation, route }) => {
-  const { name } = route.params;
+  const { name, data } = route.params;
   const [job, setJob] = React.useState("");
   return (
     <View>
@@ -85,6 +85,11 @@ const Screen3 = ({ navigation, route }) => {
             FINISH
           </Text>
         </TouchableOpacity>
+      </View>
+      <View>
+        <Text>Name: {data.name}</Text>
+        <Text>Todo: {data.todo}</Text>
+        <Text>ID: {data.id}</Text>
       </View>
     </View>
   );

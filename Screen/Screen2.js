@@ -14,6 +14,8 @@ const Screen2 = ({ navigation, route }) => {
   const { name, job } = route.params;
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState([]);
+  const [search, setSearch] = useState("");
+  const [init, setInit] = useState([]);
   const url = "https://6544adfd5a0b4b04436cb89a.mockapi.io/api/todoapp/todo/";
 
   useEffect(() => {
@@ -23,9 +25,21 @@ const Screen2 = ({ navigation, route }) => {
         setData(res);
         const abc = res.find((item) => item.name === name);
         setFilter(abc.todo);
+        setInit(abc.todo);
         console.log(abc.todo);
       });
   }, []);
+
+  useEffect(() => {
+    if (search === "") {
+      setFilter(init);
+    } else {
+      const filtered = filter.filter((item) =>
+        item.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilter(filtered);
+    }
+  }, [search]);
 
   return (
     <View>
@@ -62,6 +76,8 @@ const Screen2 = ({ navigation, route }) => {
               alignItems: "center",
               padding: 10,
             }}
+            onChangeText={(text) => setSearch(text)}
+            value={search}
           ></TextInput>
         </View>
       </View>
@@ -103,7 +119,7 @@ const Screen2 = ({ navigation, route }) => {
       <TouchableOpacity
         style={{ alignItems: "center" }}
         onPress={() => {
-          navigation.navigate("Screen3", { name });
+          navigation.navigate("Screen3", { name, data });
         }}
       >
         <AntDesign name="pluscircle" size={50} color="green" />
