@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,14 +7,37 @@ import {
   Image,
   TextInput,
 } from "react-native";
-import React from "react";
 import { AntDesign } from "@expo/vector-icons";
-import { EvilIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 
 const Screen3 = ({ navigation, route }) => {
+  const [toDoNew, setToDoNew] = useState("");
   const { name, data } = route.params;
-  const [job, setJob] = React.useState("");
+
+  const addJobToAPI = (userId) => {
+    // Dữ liệu công việc mới
+    const newJobData = {
+      todo: toDoNew,
+    };
+
+    fetch(`https://6544adfd5a0b4b04436cb89a.mockapi.io/api/todoapp/todo/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newJobData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Công việc mới đã được thêm:", data);
+        // Điều hướng về Screen2
+        navigation.navigate("Screen2", { name });
+      })
+      .catch((error) => {
+        console.error("Đã xảy ra lỗi khi thêm công việc mới:", error);
+      });
+  };
+
   return (
     <View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -24,12 +48,10 @@ const Screen3 = ({ navigation, route }) => {
           ></Image>
           <View style={{ justifyContent: "center" }}>
             <Text style={{ fontWeight: "bold" }}>Hi {name}</Text>
-            <Text>Have agreate day a head</Text>
+            <Text>Have a great day ahead</Text>
           </View>
         </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Screen2", { name })}
-        >
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={24} color="black" />
         </TouchableOpacity>
       </View>
@@ -60,11 +82,11 @@ const Screen3 = ({ navigation, route }) => {
             style={{
               width: "100%",
               height: 40,
-              border: "none",
+              borderWidth: 0, // Sửa lỗi border
               marginLeft: 20,
             }}
-            onChangeText={(text) => setJob(text)}
-            value={job}
+            value={toDoNew}
+            onChangeText={(text) => setToDoNew(text)}
           ></TextInput>
         </View>
       </View>
@@ -75,21 +97,15 @@ const Screen3 = ({ navigation, route }) => {
             height: 50,
             backgroundColor: "#26c3d9",
             borderRadius: 10,
-            textAlign: "center",
             justifyContent: "center",
             alignItems: "center",
           }}
-          onPress={() => navigation.navigate("Screen2", { name, job })}
+          onPress={() => addJobToAPI(data.id)}
         >
           <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
             FINISH
           </Text>
         </TouchableOpacity>
-      </View>
-      <View>
-        <Text>Name: {data.name}</Text>
-        <Text>Todo: {data.todo}</Text>
-        <Text>ID: {data.id}</Text>
       </View>
     </View>
   );

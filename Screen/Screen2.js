@@ -11,11 +11,13 @@ import { AntDesign } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 
 const Screen2 = ({ navigation, route }) => {
-  const { name, job } = route.params;
+  const { name } = route.params;
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState([]);
   const [search, setSearch] = useState("");
   const [init, setInit] = useState([]);
+  const [update, setUpdate] = useState(0);
+
   const url = "https://6544adfd5a0b4b04436cb89a.mockapi.io/api/todoapp/todo/";
 
   useEffect(() => {
@@ -26,9 +28,17 @@ const Screen2 = ({ navigation, route }) => {
         const abc = res.find((item) => item.name === name);
         setFilter(abc.todo);
         setInit(abc.todo);
-        console.log(abc.todo);
+        if (abc) {
+          console.log(abc.todo);
+          update = 0;
+        } else {
+          console.log("Không tìm thấy dữ liệu");
+        }
+      })
+      .then((error) => {
+        console.error("Đã xảy ra lỗi khi lấy dữ liệu:", error);
       });
-  }, []);
+  }, [route.params.update]);
 
   useEffect(() => {
     if (search === "") {
@@ -52,6 +62,7 @@ const Screen2 = ({ navigation, route }) => {
             source={require("../assets/avatarA.png")}
             style={{ width: 50, height: 50, resizeMode: "contain" }}
           ></Image>
+
           <View style={{ justifyContent: "center" }}>
             <Text style={{ fontWeight: "bold" }}>Hi {name}</Text>
             <Text>Have agreate day a head</Text>
@@ -91,7 +102,7 @@ const Screen2 = ({ navigation, route }) => {
         {filter.map((item) => {
           return (
             <TouchableOpacity
-              key={item.id}
+              key={item.id} // Add a unique key
               style={{
                 width: "90%",
                 height: 40,
@@ -116,10 +127,11 @@ const Screen2 = ({ navigation, route }) => {
           );
         })}
       </View>
+
       <TouchableOpacity
         style={{ alignItems: "center" }}
         onPress={() => {
-          navigation.navigate("Screen3", { name, data });
+          navigation.navigate("Screen3", { name, data, update });
         }}
       >
         <AntDesign name="pluscircle" size={50} color="green" />
