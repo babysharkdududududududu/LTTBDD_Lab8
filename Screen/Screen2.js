@@ -20,25 +20,21 @@ const Screen2 = ({ navigation, route }) => {
 
   const url = "https://6544adfd5a0b4b04436cb89a.mockapi.io/api/todoapp/todo/";
 
+  // Trong Screen2
   useEffect(() => {
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
-        setData(res);
         const abc = res.find((item) => item.name === name);
+        setData(abc);
         setFilter(abc.todo);
         setInit(abc.todo);
-        if (abc) {
-          console.log(abc.todo);
-          update = 0;
-        } else {
-          console.log("Không tìm thấy dữ liệu");
-        }
+        update = 0;
       })
-      .then((error) => {
+      .catch((error) => {
         console.error("Đã xảy ra lỗi khi lấy dữ liệu:", error);
       });
-  }, [route.params.update]);
+  }, [route.params.update, name]);
 
   useEffect(() => {
     if (search === "") {

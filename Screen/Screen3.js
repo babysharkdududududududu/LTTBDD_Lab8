@@ -12,32 +12,35 @@ import { Entypo } from "@expo/vector-icons";
 
 const Screen3 = ({ navigation, route }) => {
   const [toDoNew, setToDoNew] = useState("");
-  const { name, data } = route.params;
-
-  const addJobToAPI = (userId) => {
-    // Dữ liệu công việc mới
-    const newJobData = {
-      todo: toDoNew,
-    };
-
-    fetch(`https://6544adfd5a0b4b04436cb89a.mockapi.io/api/todoapp/todo/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newJobData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Công việc mới đã được thêm:", data);
-        // Điều hướng về Screen2
-        navigation.navigate("Screen2", { name });
-      })
-      .catch((error) => {
-        console.error("Đã xảy ra lỗi khi thêm công việc mới:", error);
-      });
+  const { name, data, update } = route.params;
+  const handleNavigate = () => {
+    navigation.navigate("Screen2", { name, update });
   };
 
+  function addTextToUserById(userId, newText) {
+    fetch(
+      `https://6544adfd5a0b4b04436cb89a.mockapi.io/api/todoapp/todo/${userId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          todo: [...data.todo, newText],
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((updatedData) => {
+        console.log("Dữ liệu đã được cập nhật:", updatedData);
+        update = update + 1;
+      })
+      .catch((error) => {
+        console.error("Đã xảy ra lỗi khi cập nhật dữ liệu:", error);
+      });
+    console.log("update", update);
+    handleNavigate();
+  }
   return (
     <View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -100,7 +103,7 @@ const Screen3 = ({ navigation, route }) => {
             justifyContent: "center",
             alignItems: "center",
           }}
-          onPress={() => addJobToAPI(data.id)}
+          onPress={() => addTextToUserById(data.id, toDoNew)}
         >
           <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
             FINISH
