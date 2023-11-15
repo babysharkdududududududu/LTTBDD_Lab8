@@ -20,7 +20,6 @@ const Screen2 = ({ navigation, route }) => {
 
   const url = "https://6544adfd5a0b4b04436cb89a.mockapi.io/api/todoapp/todo/";
 
-  // Trong Screen2
   useEffect(() => {
     fetch(url)
       .then((res) => res.json())
